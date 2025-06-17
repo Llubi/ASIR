@@ -90,7 +90,7 @@ services:
 
     volumes:
 
-      - Jenkins_home:/var/Jenkins_home
+      - jenkins_home:/var/jenkins_home
 
       - /var/run/docker.sock:/var/run/docker.sock  # <== Acceso al Docker del host
 
@@ -104,4 +104,4 @@ volumes:
 
   db_data:
 
-  Jenkins_home:
+  jenkins_home:
