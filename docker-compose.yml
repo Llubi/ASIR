@@ -1,107 +1,53 @@
 version: '3.8'
 
-
-
 services:
-
   app:
-
     container_name: logistica-app
-
     build: .
-
     ports:
-
-      - "3000:3000"
-
+      - "3001:3000"
       - "5555:5555"
-
     environment:
-
-      - DATABASE_URL=MySQL://root:root@db:3306/logistica
-
+      - DATABASE_URL=mysql://root:root@db:3306/logistica
       - JWT_SECRET=supersecreto123
-
     depends_on:
-
       - db
-
-    volumes:
-
-      - .:/app
-
+    # 🔥 QUITADO el bind-mount para no sobreescribir .next ni node_modules
     restart: unless-stopped
-
-
 
   db:
-
     image: mariadb:10.5
-
     container_name: logistica-db
-
     restart: always
-
     environment:
-
       MYSQL_ROOT_PASSWORD: root
-
       MYSQL_DATABASE: logistica
-
     ports:
-
       - "3306:3306"
-
     volumes:
-
-      - db_data:/var/lib/MySQL
-
-
+      - db_data:/var/lib/mysql
 
   adminer:
-
     image: adminer
-
     container_name: logistica-adminer
-
     restart: always
-
     ports:
-
       - "8081:8080"
 
-
-
   jenkins:
-
     image: jenkins/jenkins:lts
-
     container_name: logistica-jenkins
-
     user: root
-
     restart: unless-stopped
-
     ports:
-
       - "8080:8080"
-
       - "50000:50000"
-
     volumes:
-
       - jenkins_home:/var/jenkins_home
-
-      - /var/run/docker.sock:/var/run/docker.sock  # <== Acceso al Docker del host
-
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
-
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
 
-
-
 volumes:
-
   db_data:
-
   jenkins_home:
