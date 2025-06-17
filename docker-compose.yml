@@ -72,11 +72,11 @@ services:
 
 
 
-  Jenkins:
+  jenkins:
 
-    image: Jenkins/Jenkins:lts
+    image: jenkins/jenkins:lts
 
-    container_name: logística-Jenkins
+    container_name: logística-jenkins
 
     user: root
 
