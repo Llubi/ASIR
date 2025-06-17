@@ -33,6 +33,13 @@ export default function Registro() {
               Iniciar sesión
             </a>
             <a
+              href="/invitado"
+              className="text-blue-600 underline text-sm text-center block mt-4"
+            >
+  ¿Eres cliente y aún no estás registrado? Entra como invitado
+</a>
+
+            <a
               href="/"
               className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
             >
