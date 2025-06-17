@@ -1,37 +1,107 @@
 version: '3.8'
+
+
+
 services:
+
   app:
-    container_name: logistica-app
+
+    container_name: logística-app
+
     build: .
+
     ports:
+
       - "3000:3000"
+
       - "5555:5555"
+
     environment:
-      - DATABASE_URL=mysql://root:root@db:3306/logistica
+
+      - DATABASE_URL=MySQL://root:root@db:3306/logistica
+
       - JWT_SECRET=supersecreto123
+
     depends_on:
+
       - db
+
     volumes:
+
       - .:/app
+
     restart: unless-stopped
 
+
+
   db:
+
     image: mariadb:10.5
-    container_name: logistica-db
+
+    container_name: logística-db
+
     restart: always
+
     environment:
+
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: logistica
+
+      MYSQL_DATABASE: logística
+
     ports:
+
       - "3306:3306"
+
     volumes:
-      - db_data:/var/lib/mysql
+
+      - db_data:/var/lib/MySQL
+
+
 
   adminer:
+
     image: adminer
+
+    container_name: logística-adminer
+
     restart: always
+
     ports:
+
+      - "8081:8080"
+
+
+
+  Jenkins:
+
+    image: Jenkins/Jenkins:lts
+
+    container_name: logística-Jenkins
+
+    user: root
+
+    restart: unless-stopped
+
+    ports:
+
       - "8080:8080"
 
+      - "50000:50000"
+
+    volumes:
+
+      - Jenkins_home:/var/Jenkins_home
+
+      - /var/run/docker.sock:/var/run/docker.sock  # <== Acceso al Docker del host
+
+    environment:
+
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+
+
+
 volumes:
+
   db_data:
+
+  Jenkins_home:
