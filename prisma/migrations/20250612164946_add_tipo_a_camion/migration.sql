@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Camion` ADD COLUMN `tipo` VARCHAR(191) NOT NULL DEFAULT 'FRIGO';
