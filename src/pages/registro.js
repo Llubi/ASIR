@@ -33,13 +33,6 @@ export default function Registro() {
               Iniciar sesión
             </a>
             <a
-              href="/invitado"
-              className="text-blue-600 underline text-sm text-center block mt-4"
-            >
-  ¿Eres cliente y aún no estás registrado? Entra como invitado
-</a>
-
-            <a
               href="/"
               className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
             >
@@ -56,6 +49,7 @@ export default function Registro() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8 gap-6">
       <h1 className="text-3xl font-bold">Registro de Usuario</h1>
+
       <form className="flex flex-col gap-4 w-full max-w-sm" onSubmit={handleSubmit}>
         <input
           name="nombre"
@@ -128,7 +122,16 @@ export default function Registro() {
           Registrarse
         </button>
       </form>
+
       {mensaje && <p className="mt-4 text-sm text-center">{mensaje}</p>}
+
+      {/* 🔹 Enlace para invitados visible SIEMPRE */}
+      <a
+        href="/invitado"
+        className="text-blue-600 underline text-sm text-center block mt-6"
+      >
+        ¿Eres cliente y aún no estás registrado? Entra como invitado
+      </a>
     </main>
   );
 }

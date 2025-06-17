@@ -6,7 +6,7 @@ services:
 
   app:
 
-    container_name: logística-app
+    container_name: logistica-app
 
     build: .
 
@@ -38,7 +38,7 @@ services:
 
     image: mariadb:10.5
 
-    container_name: logística-db
+    container_name: logistica-db
 
     restart: always
 
@@ -46,7 +46,7 @@ services:
 
       MYSQL_ROOT_PASSWORD: root
 
-      MYSQL_DATABASE: logística
+      MYSQL_DATABASE: logistica
 
     ports:
 
@@ -62,7 +62,7 @@ services:
 
     image: adminer
 
-    container_name: logística-adminer
+    container_name: logistica-adminer
 
     restart: always
 
@@ -76,7 +76,7 @@ services:
 
     image: jenkins/jenkins:lts
 
-    container_name: logística-jenkins
+    container_name: logistica-jenkins
 
     user: root
 
