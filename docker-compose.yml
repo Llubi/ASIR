@@ -12,7 +12,6 @@ services:
       - JWT_SECRET=supersecreto123
     depends_on:
       - db
-    # 🔥 QUITADO el bind-mount para no sobreescribir .next ni node_modules
     restart: unless-stopped
 
   db:

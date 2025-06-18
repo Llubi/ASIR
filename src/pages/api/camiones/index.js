@@ -7,9 +7,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const usuario = verificarToken(req); // Le pasamos `req` completo
+    const usuario = verificarToken(req); 
 
-    // Si es CLIENTE, solo ve camiones disponibles
     if (usuario.rol === "CLIENTE") {
       const disponibles = await prisma.camion.findMany({
         where: { estado: "Disponible" },
@@ -17,13 +16,12 @@ export default async function handler(req, res) {
       return res.status(200).json(disponibles);
     }
 
-    // Si es ADMINISTRADOR o TRABAJADOR, ve todos los camiones
     if (usuario.rol === "ADMINISTRADOR" || usuario.rol === "TRABAJADOR") {
       const todos = await prisma.camion.findMany();
       return res.status(200).json(todos);
     }
 
-    // Rol desconocido
+   
     return res.status(403).json({ error: "Acceso denegado por rol" });
   } catch (error) {
     console.error("Error al obtener camiones:", error);

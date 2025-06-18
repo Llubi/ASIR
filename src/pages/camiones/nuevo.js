@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
+import styles from "@/styles/CamionesForm.module.css";
 
 export default function NuevoCamion() {
   const [form, setForm] = useState({
@@ -12,25 +13,6 @@ export default function NuevoCamion() {
 
   const [mensaje, setMensaje] = useState("");
   const router = useRouter();
-
-  useEffect(() => {
-    const checkPermiso = () => {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        router.push("/login");
-        return;
-      }
-
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      if (payload.rol !== "ADMINISTRADOR") {
-        alert("Acceso no autorizado");
-        router.push("/camiones");
-      }
-    };
-
-    checkPermiso();
-  }, [router]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -51,54 +33,52 @@ export default function NuevoCamion() {
       });
 
       const data = await res.json();
-
       if (!res.ok) {
-        setMensaje(`❌ ${data.error || "Error al crear camión"}`);
+        setMensaje(`❌ ${data.error || "Error al guardar"}`);
         return;
       }
 
-      setMensaje("✅ Camión creado correctamente");
       router.push("/camiones");
     } catch (err) {
-      setMensaje("❌ " + err.message);
+      console.error(err);
+      setMensaje("❌ Error inesperado");
     }
   };
 
   return (
-    <main className="min-h-screen p-8 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">🆕 Alta de Camión</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <main className={styles.container}>
+      <h1 className={styles.title}>➕ Nuevo Camión</h1>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           name="matricula"
           placeholder="Matrícula"
-          required
           value={form.matricula}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className={styles.input}
+          required
         />
         <input
           name="modelo"
           placeholder="Modelo"
-          required
           value={form.modelo}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className={styles.input}
+          required
         />
         <input
           name="capacidad"
-          placeholder="Capacidad (TN)"
           type="number"
-          required
+          placeholder="Capacidad (toneladas)"
           value={form.capacidad}
           onChange={handleChange}
-          className="p-2 border rounded"
-          max="25"
+          className={styles.input}
+          required
         />
         <select
           name="estado"
           value={form.estado}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className={styles.select}
         >
           <option>Disponible</option>
           <option>En ruta</option>
@@ -108,25 +88,23 @@ export default function NuevoCamion() {
           name="tipo"
           value={form.tipo}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className={styles.select}
           required
         >
-          <option value="">Selecciona tipo</option>
+          <option value="">-- Selecciona tipo --</option>
           <option value="FRIGO">FRIGO</option>
           <option value="LONA">LONA</option>
           <option value="MEGA">MEGA</option>
         </select>
 
-        <button
-          type="submit"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        >
-          Crear Camión
+        <button type="submit" className={styles.button}>
+          Guardar Camión
         </button>
+
         {mensaje && (
           <p
-            className={`text-sm text-center mt-2 ${
-              mensaje.startsWith("❌") ? "text-red-600" : "text-green-600"
+            className={`text-sm mt-2 ${
+              mensaje.startsWith("❌") ? styles.error : styles.success
             }`}
           >
             {mensaje}

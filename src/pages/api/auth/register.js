@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   const { nombre, email, password, rol, dni, vat } = req.body;
 
-  // Validación de formato
+
   const dniRegex = /^[0-9]{8}[A-Za-z]$/;
   const vatRegex = /^[A-Za-z]{1}[0-9]{8,}$/;
 
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
         email: cleanEmail,
         password: hashedPassword,
         rolId: rolBuscado.id,
-        estado: "PENDIENTE", // ← Se debe activar manualmente por un admin
+        estado: "PENDIENTE", // Se debe activar manualmente por un admin
         dni: dni || null,
         vat: vat || null,
       },

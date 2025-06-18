@@ -3,7 +3,7 @@ import { verificarToken } from "@/lib/auth";
 
 export default async function handler(req, res) {
   try {
-    const decoded = verificarToken(req); // Verificamos y obtenemos el payload del token
+    const decoded = verificarToken(req); 
 
     const usuario = await prisma.usuario.findUnique({
       where: { id: decoded.id },

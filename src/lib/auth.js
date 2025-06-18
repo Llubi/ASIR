@@ -15,7 +15,7 @@ export function verificarToken(req) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded; // { id, email, rol, etc. }
+    return decoded;
   } catch (err) {
     throw new Error("Token inválido");
   }

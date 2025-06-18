@@ -1,89 +1,123 @@
 import { useState } from "react";
+import styles from "@/styles/InvitadoCuestionario.module.css";
 
 export default function Invitado() {
   const [formData, setFormData] = useState({
     nombre: "",
     email: "",
+    empresa: "",
+    interes: "",
     mensaje: "",
   });
   const [enviado, setEnviado] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setEnviado(false);
 
-    // Aquí podrías enviar a un backend, correo, etc.
-    console.log("Mensaje de invitado:", formData);
+  try {
+    const res = await fetch("/api/invitado", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
 
-    setEnviado(true);
-    setFormData({ nombre: "", email: "", mensaje: "" });
-  };
+    if (res.ok) {
+      setEnviado(true);
+      setFormData({ nombre: "", email: "", empresa: "", interes: "", mensaje: "" });
+    } else {
+      const data = await res.json();
+      alert(data.error || "Error al enviar el mensaje");
+    }
+  } catch (err) {
+    alert("❌ Error de red");
+  }
+};
 
   return (
-    <main className="min-h-screen max-w-3xl mx-auto p-8 flex flex-col gap-6">
-      <h1 className="text-3xl font-bold text-center">Bienvenido a nuestra empresa logística</h1>
+    <main className={styles.container}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Bienvenido a Transportes Logísticos Lozano</h1>
+        <p className={styles.subtitle}>
+          Soluciones logísticas a medida con una flota moderna y eficiente.
+        </p>
+        <img
+          src="/camion.png"
+          alt="Camiones en ruta"
+          style={{ borderRadius: "1rem", width: "100%", marginTop: "1.5rem" }}
+        />
+      </header>
 
-      <section className="text-lg text-gray-700">
-        <p>
-          Somos una empresa especializada en el transporte y gestión de flotas de camiones. 
-          Nuestro objetivo es ofrecer soluciones logísticas eficientes y adaptadas a tus necesidades.
-        </p>
-        <p className="mt-4">
-          Si estás interesado en colaborar con nosotros o tienes alguna duda, rellena el siguiente formulario y nos pondremos en contacto contigo lo antes posible.
-        </p>
+      <section>
+        <h2 className={styles.subtitle} style={{ fontWeight: "bold" }}>
+          Cuéntanos más sobre ti
+        </h2>
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <input
+            name="nombre"
+            type="text"
+            placeholder="Nombre completo"
+            value={formData.nombre}
+            onChange={handleChange}
+            className={styles.input}
+            required
+          />
+          <input
+            name="email"
+            type="email"
+            placeholder="Correo electrónico"
+            value={formData.email}
+            onChange={handleChange}
+            className={styles.input}
+            required
+          />
+          <input
+            name="empresa"
+            type="text"
+            placeholder="Nombre de tu empresa"
+            value={formData.empresa}
+            onChange={handleChange}
+            className={styles.input}
+          />
+          <select
+            name="interes"
+            value={formData.interes}
+            onChange={handleChange}
+            className={styles.input}
+            required
+          >
+            <option value="">Selecciona tu interés</option>
+            <option value="transporte">Servicios de transporte</option>
+            <option value="colaboracion">Propuesta de colaboración</option>
+            <option value="informacion">Solicitar información</option>
+          </select>
+          <textarea
+            name="mensaje"
+            placeholder="Cuéntanos en detalle cómo podemos ayudarte"
+            value={formData.mensaje}
+            onChange={handleChange}
+            className={styles.textarea}
+            rows={5}
+            required
+          />
+          <button type="submit" className={styles.button}>
+            Enviar solicitud
+          </button>
+        </form>
+
+        {enviado && (
+          <p className={styles.success}>
+            ✅ Gracias por tu interés. Nuestro equipo se pondrá en contacto contigo.
+          </p>
+        )}
+
+        <div className={styles.link}>
+          <a href="/">← Volver al inicio</a>
+        </div>
       </section>
-
-      <form className="flex flex-col gap-4 mt-6" onSubmit={handleSubmit}>
-        <input
-          name="nombre"
-          type="text"
-          placeholder="Tu nombre"
-          value={formData.nombre}
-          onChange={handleChange}
-          required
-          className="border px-4 py-2 rounded"
-        />
-        <input
-          name="email"
-          type="email"
-          placeholder="Tu correo electrónico"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className="border px-4 py-2 rounded"
-        />
-        <textarea
-          name="mensaje"
-          placeholder="Tu mensaje"
-          value={formData.mensaje}
-          onChange={handleChange}
-          required
-          rows={4}
-          className="border px-4 py-2 rounded"
-        />
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Enviar mensaje
-        </button>
-      </form>
-
-      {enviado && (
-        <p className="text-green-600 text-center mt-4">
-          ✅ ¡Mensaje enviado correctamente! Gracias por tu interés.
-        </p>
-      )}
-
-      <div className="text-center mt-8">
-        <a href="/" className="text-blue-600 underline">
-          Volver al inicio
-        </a>
-      </div>
     </main>
   );
 }

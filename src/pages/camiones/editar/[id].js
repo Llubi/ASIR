@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import styles from "@/styles/CamionesForm.module.css";
 
 export default function EditarCamion() {
   const [form, setForm] = useState({
@@ -7,10 +8,11 @@ export default function EditarCamion() {
     modelo: "",
     capacidad: "",
     estado: "Disponible",
-    tipo: "", // ✅ Asegúrate de incluirlo
+    tipo: "",
   });
 
   const [mensaje, setMensaje] = useState("");
+  const [rol, setRol] = useState(null);
   const router = useRouter();
   const { id } = router.query;
 
@@ -20,6 +22,9 @@ export default function EditarCamion() {
       router.push("/login");
       return;
     }
+
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    setRol(payload.rol);
 
     if (!id) return;
 
@@ -51,6 +56,7 @@ export default function EditarCamion() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
+    if (rol !== "ADMINISTRADOR") return;
 
     try {
       const res = await fetch(`/api/camiones/${id}`, {
@@ -78,71 +84,76 @@ export default function EditarCamion() {
   };
 
   return (
-    <main className="min-h-screen p-8 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">✏️ Editar Camión</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <main className={styles.container}>
+      <h1 className={styles.title}>✏️ Editar Camión</h1>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           name="matricula"
           placeholder="Matrícula"
-          required
           value={form.matricula}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className={styles.input}
+          disabled={rol !== "ADMINISTRADOR"}
+          required
         />
         <input
           name="modelo"
           placeholder="Modelo"
-          required
           value={form.modelo}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className={styles.input}
+          disabled={rol !== "ADMINISTRADOR"}
+          required
         />
         <input
           name="capacidad"
           type="number"
-          min="1"
-          max="25"
-          step="0.1"
           placeholder="Capacidad (toneladas)"
-          required
           value={form.capacidad}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className={styles.input}
+          disabled={rol !== "ADMINISTRADOR"}
+          required
         />
         <select
           name="estado"
           value={form.estado}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className={styles.select}
+          disabled={rol !== "ADMINISTRADOR"}
         >
           <option>Disponible</option>
           <option>En ruta</option>
           <option>En mantenimiento</option>
         </select>
-
         <select
           name="tipo"
           value={form.tipo}
           onChange={handleChange}
-          className="p-2 border rounded"
+          className={styles.select}
+          disabled={rol !== "ADMINISTRADOR"}
+          required
         >
-          <option value="">-- Seleccionar tipo --</option>
+          <option value="">-- Selecciona tipo --</option>
           <option value="FRIGO">FRIGO</option>
           <option value="LONA">LONA</option>
           <option value="MEGA">MEGA</option>
         </select>
 
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Guardar cambios
-        </button>
+        {rol === "ADMINISTRADOR" && (
+          <button type="submit" className={styles.button}>
+            Guardar cambios
+          </button>
+        )}
+
+        {rol !== "ADMINISTRADOR" && (
+          <p className={styles.readonly}>Solo los administradores pueden guardar cambios.</p>
+        )}
 
         {mensaje && (
           <p
-            className={`text-sm text-center mt-2 ${
-              mensaje.startsWith("❌") ? "text-red-600" : "text-green-600"
+            className={`${styles.message} ${
+              mensaje.startsWith("❌") ? styles.error : styles.success
             }`}
           >
             {mensaje}

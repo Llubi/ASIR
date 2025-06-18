@@ -25,7 +25,6 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
 
-    // 👇 Verificar si el usuario está activado
     if (usuario.estado !== "ACTIVO") {
       return res.status(403).json({
         error: "Tu cuenta está pendiente de validación por un administrador.",
